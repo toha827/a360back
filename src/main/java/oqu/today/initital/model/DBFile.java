@@ -11,7 +11,7 @@ public class DBFile {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
-    private int userId;
+    private long userId;
     private String fileName;
 
     private String fileType;
@@ -61,11 +61,11 @@ public class DBFile {
         this.data = data;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

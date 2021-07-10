@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,7 +41,7 @@ public class FileRestContoller {
 
     @CrossOrigin(localhost)
     @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("userId") int userId) {
+    public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("userId") long userId) {
         DBFile dbFile = dbFileStorageService.storeFile(file,userId);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -47,12 +49,16 @@ public class FileRestContoller {
                 .path(dbFile.getId())
                 .toUriString();
 
-        User user = userRepository.findById(userId);
+        Optional<User> user = userRepository.findById(userId);
 
-        userRepository.updateUser(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getGender(), dbFile.getId(), user.getBday(), user.getPhone());
+        if(user.isPresent()) {
+            userRepository.updateUser(user.get().getId(), user.get().getName(), user.get().getEmail(), user.get().getPassword(), user.get().getGender(), dbFile.getId(), user.get().getBday(), user.get().getPhone());
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
 
-        return new UploadFileResponse(dbFile.getFileName(), dbFile.getId(),
-                file.getContentType(), file.getSize());
+        return new ResponseEntity(new UploadFileResponse(dbFile.getFileName(), dbFile.getId(),
+                file.getContentType(), file.getSize()), HttpStatus.OK);
     }
 
     @CrossOrigin(localhost)

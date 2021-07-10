@@ -5,11 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import oqu.today.initital.model.Course;
-import oqu.today.initital.model.CourseUser;
-import oqu.today.initital.model.response.myCourseResponse;
+import oqu.today.initital.model.User;
+import oqu.today.initital.model.request.PurchaseCourse;
 import oqu.today.initital.repository.CourseRepository;
-import oqu.today.initital.repository.CourseUserRepository;
 import oqu.today.initital.repository.LessonRepository;
+import oqu.today.initital.repository.UserRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,22 +31,21 @@ public class CourseRestController {
     private LessonRepository lessonRepository;
 
     @Autowired
-    private CourseUserRepository courseUserRepository;
+    private UserRepository userRepository;
 
     final String localhost = "https://45.80.70.68";
     final String payment = "https://payment.oqu.today";
 //    final String localhost = "http://localhost:3000";
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/readAll",produces = "application/json")
-    public String getall() throws JSONException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonObject json = new JsonObject();
-        List<Course> courses = courseRepository.findAll();
-        String element = gson.toJson(
-                courses,
-                new TypeToken<ArrayList<Course>>() {}.getType());
+    public ResponseEntity getall()  {
+        try {
+            List<Course> courses = courseRepository.findAll();
 
-        return "{ \"data\": " + element + "\n}";
+            return new ResponseEntity(courses, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @CrossOrigin(localhost)
@@ -57,12 +56,22 @@ public class CourseRestController {
 
     @CrossOrigin(payment)
     @PostMapping(value="/create")
-    public ResponseEntity payment(@RequestBody CourseUser course){
+    public ResponseEntity payment(@RequestBody PurchaseCourse purchase){
         try {
-            final Course _course = courseRepository.findByCourseId(course.getCourseId());
-            _course.setLessons(lessonRepository.findByCourseId(course.getCourseId()));
-            courseUserRepository.save(new CourseUser(course.getUserId(),course.getCourseId(),0, _course));
-            return new ResponseEntity(course.getCourseId(), HttpStatus.OK);
+            final Course _course = courseRepository.findByCourseId(purchase.getCourse_id());
+            _course.setLessons(lessonRepository.findByCourseId(purchase.getCourse_id()));
+            final Optional<User> _user = userRepository.findById(purchase.getUser_id());
+            if(_user.isPresent()) {
+
+                final List<Course> _temp = _user.get().getPurchaised();
+                _temp.add(_course);
+                _user.get().setPurchaised(_temp);
+                userRepository.save(_user.get());
+
+                return new ResponseEntity(_course, HttpStatus.OK);
+            } else {
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity(e.toString(), HttpStatus.BAD_REQUEST);
         }
@@ -70,29 +79,13 @@ public class CourseRestController {
 
     @CrossOrigin(localhost)
     @GetMapping(value = "/read",produces = "application/json")
-    public ResponseEntity<myCourseResponse> getCourse(@RequestParam String user_id)  {
+    public ResponseEntity getCourse(@RequestParam long user_id)  {
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonObject json = new JsonObject();
-            myCourseResponse response = new myCourseResponse();
-            Optional<List<CourseUser>> courseUser = courseUserRepository.findByUserId(Integer.parseInt(user_id));
-            //String element = gson.toJson(courseUser,CourseUser.class);
-            if (courseUser.isPresent()) {
-                List<Course> courses = new ArrayList<>();
-                for (CourseUser temp : courseUser.get()) {
-                    try {
-                        Course course = courseRepository.findByCourseId(temp.getCourseId());
-                        course.setProgress(temp.getProgress());
-                        courses.add(course);
-                    }catch (Exception e){
-                        continue;
-                    }
-                }
-//                String element = gson.toJson(courseUser.get(), new TypeToken<ArrayList<CourseUser>>() {}.getType());
-                response.setData(courseUser.get());
-                return new ResponseEntity(response, HttpStatus.OK);
+            final Optional<User> _user = userRepository.findById(user_id);
+           if (_user.isPresent()) {
+                return new ResponseEntity(_user.get().getPurchaised(), HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.NO_CONTENT);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

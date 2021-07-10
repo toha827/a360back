@@ -36,17 +36,17 @@ public class    TeacherRestController {
     @PostMapping(value="/load")
     public void persist(@RequestBody Teacher teacher){
         //int id, String name, String position, String info, int age, String email, String photo, String status, int course_id) {
-        teacherRepository.save(new Teacher(teacher.getName(),teacher.getPosition(),teacher.getInfo(),teacher.getAge(),teacher.getEmail(),teacher.getPhoto(),teacher.getStatus(),teacher.getCourseId()));
+        teacherRepository.save(new Teacher(teacher.getName(),teacher.getPosition(),teacher.getInfo(),teacher.getAge(),teacher.getEmail(),teacher.getPhoto(),teacher.getStatus()));
         return;
     }
 
-    @GetMapping(value = "/read",produces = "application/json")
-    public String getTeacherByCourse(@RequestParam int course_id) throws JSONException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        List<Teacher> teacher = teacherRepository.findByCourseId(course_id);
-        String element = gson.toJson(teacher,new TypeToken<ArrayList<Teacher>>() {}.getType());
-        return element == null ? "" : element;
-    }
+//    @GetMapping(value = "/read",produces = "application/json")
+//    public String getTeacherByCourse(@RequestParam int course_id) throws JSONException {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        List<Teacher> teacher = teacherRepository.findByCourseId(course_id);
+//        String element = gson.toJson(teacher,new TypeToken<ArrayList<Teacher>>() {}.getType());
+//        return element == null ? "" : element;
+//    }
 
     @GetMapping(value = "/delete")
     public void delete(@RequestParam int id){

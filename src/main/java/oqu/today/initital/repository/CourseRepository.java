@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course,Long>{
 
-    @Query(value = "Select p from Course p where p.courseId=:id")
+    @Query(value = "Select p from Course p where p.id=:id")
     Course findByCourseId(@Param("id") int id);
 //    void deleteByCourseId(int id);
 

@@ -1,11 +1,14 @@
 package oqu.today.initital.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,16 +19,18 @@ public class User {
     private String phone;
     private String password;
     private String gender;
-    //private String timestamp;
     private String activation;
     private int status;
     private String avatar;
     private Date bday;
+    @OneToMany
+    @JsonIgnore
+    private List<Course> purchaised;
 
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String gender, String activation, int status, String avatar, Date bday) {
+    public User(String name, String email, String phone, String password, String gender, String activation, int status, String avatar, Date bday, List<Course> purchaised) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -35,6 +40,7 @@ public class User {
         this.status = status;
         this.avatar = avatar;
         this.bday = bday;
+        this.purchaised = purchaised;
     }
 
     public User(String name, String email, String password) {
@@ -137,5 +143,13 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<Course> getPurchaised() {
+        return purchaised;
+    }
+
+    public void setPurchaised(List<Course> purchaised) {
+        this.purchaised = purchaised;
     }
 }

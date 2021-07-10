@@ -26,17 +26,16 @@ public class Question implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    private Quiz quiz;
 
     public Question() {
     }
 
-    public Question(String content, String courseType, Set<Option> options, Course course) {
+    public Question(String content, String courseType, Set<Option> options, Quiz quiz) {
         this.content = content;
         this.courseType = courseType;
         this.options = options;
-        this.course = course;
+        this.quiz = quiz;
     }
 
     public int getId() {
@@ -71,11 +70,11 @@ public class Question implements Serializable {
         this.options = options;
     }
 
-    public Course getCourse() {
-        return course;
+    public Quiz getCourse() {
+        return quiz;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourse(Quiz quiz) {
+        this.quiz = quiz;
     }
 }

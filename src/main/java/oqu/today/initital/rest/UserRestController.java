@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import oqu.today.initital.model.JWTUtil;
 import oqu.today.initital.model.User;
+import oqu.today.initital.model.response.UserUpdateResponse;
 import oqu.today.initital.payload.EmailService;
 import oqu.today.initital.repository.UserRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,23 +60,31 @@ public class UserRestController {
     }
     @CrossOrigin(localhost)
     @GetMapping(value = "/read", produces = "application/json")
-    public String getUser(@RequestParam(name = "id") long id){
+    public ResponseEntity getUser(@RequestParam(name = "id") long id){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        User user = userRepository.findById(id);
-        String element = gson.toJson(user,User.class);
-        return element == null ? "[]" : element;
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return new ResponseEntity(user.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
     @CrossOrigin(localhost)
     @PostMapping(value = "/edit", produces = "application/json")
-    public String update(@RequestBody User newUser){
+    public ResponseEntity update(@RequestBody User newUser){
         System.out.println(newUser.toString());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        User user = userRepository.findById(newUser.getId());
-        if(!user.getPassword().equals(newUser.getPassword())){
-            return "{ \"Message\": " + "\"Password doesn't equal\" }";
+        Optional<User> user = userRepository.findById(newUser.getId());
+
+        if (user.isPresent()) {
+            if(!user.get().getPassword().equals(newUser.getPassword())){
+                return new ResponseEntity(new UserUpdateResponse("Password doesn't equal"), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            userRepository.updateUser(newUser.getId(),newUser.getName(),newUser.getEmail(),newUser.getPassword(),newUser.getGender(),newUser.getAvatar(),newUser.getBday(),newUser.getPhone());
+            return new ResponseEntity(new UserUpdateResponse("Successfull Update"), HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        userRepository.updateUser(newUser.getId(),newUser.getName(),newUser.getEmail(),newUser.getPassword(),newUser.getGender(),newUser.getAvatar(),newUser.getBday(),newUser.getPhone());
-        return "{ \"Message\": " + "\"Successfull Update\" }";
     }
 }

@@ -6,11 +6,11 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-@Table(name = "Courses")
+@Table(name = "courses")
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int courseId;
+    private long id;
     private String name;
     private String subject;
     private String image;
@@ -22,13 +22,13 @@ public class Course {
     private int teacher_id;
     private double price;
     private int progress;
-    @ManyToMany
+    @OneToMany
+    @JoinColumn(name = "course_id")
     private List<Lesson> lessons;
     @OneToMany
-    private List<Question> questions;
+    private List<Quiz> quizes;
 
-    public Course(int courseId, String name, String subject, String image, String info, int num_of_lessons, String toLearn, String toKnow, int teacher_id, double price, List<Lesson> lessons, List<Question> questions) {
-        this.courseId = courseId;
+    public Course(String name, String subject, String image, @Size(max = 4000) String info, int num_of_lessons, String toLearn, String toKnow, int teacher_id, double price, int progress, List<Lesson> lessons, List<Quiz> quizes) {
         this.name = name;
         this.subject = subject;
         this.image = image;
@@ -38,37 +38,20 @@ public class Course {
         this.toKnow = toKnow;
         this.teacher_id = teacher_id;
         this.price = price;
+        this.progress = progress;
         this.lessons = lessons;
-        this.questions = questions;
+        this.quizes = quizes;
     }
 
     public Course() {
     }
 
-    public Course(String name, String subject, String image, String info, int num_of_lessons, String toLearn, String toKnow, int teacher_id, double price, List<Lesson> lessons, List<Question> questions) {
-        this.name = name;
-        this.subject = subject;
-        this.image = image;
-        this.info = info;
-        this.num_of_lessons = num_of_lessons;
-        this.toLearn = toLearn;
-        this.toKnow = toKnow;
-        this.teacher_id = teacher_id;
-        this.price = price;
-        this.lessons = lessons;
-        this.questions = questions;
+    public long getId() {
+        return id;
     }
 
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-    }
-    public int getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(int course_id) {
-        this.courseId = course_id;
+    public void setId(int course_id) {
+        this.id = course_id;
     }
 
     public String getName() {
@@ -143,22 +126,6 @@ public class Course {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "Course{" +
-                "courser_id=" + courseId +
-                ", name='" + name + '\'' +
-                ", subject='" + subject + '\'' +
-                ", image='" + image + '\'' +
-                ", info='" + info + '\'' +
-                ", num_of_lessons=" + num_of_lessons +
-                ", toLearn='" + toLearn + '\'' +
-                ", toKnow='" + toKnow + '\'' +
-                ", teacher_id=" + teacher_id +
-                ", price=" + price +
-                '}';
-    }
-
     public int getProgress() {
         return progress;
     }
@@ -175,7 +142,30 @@ public class Course {
         this.lessons = lessons;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<Quiz> getQuizes() {
+        return quizes;
+    }
+
+    public void setQuizes(List<Quiz> quizes) {
+        this.quizes = quizes;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", subject='" + subject + '\'' +
+                ", image='" + image + '\'' +
+                ", info='" + info + '\'' +
+                ", num_of_lessons=" + num_of_lessons +
+                ", toLearn='" + toLearn + '\'' +
+                ", toKnow='" + toKnow + '\'' +
+                ", teacher_id=" + teacher_id +
+                ", price=" + price +
+                ", progress=" + progress +
+                ", lessons=" + lessons +
+                ", quizes=" + quizes +
+                '}';
     }
 }

@@ -24,17 +24,17 @@ public class QuestionRestController {
     @Autowired
     private QuestionRepository questionRepository;
 
-    @GetMapping(value = "/byCourse", produces = "application/json")
-    public ResponseEntity<List<Question>> getByCourse(@RequestParam long id) {
-        try {
-            Optional<List<Question>> _list = questionRepository.findAllByCourseCourseId(id);
-            if (_list.isPresent()) {
-                return new ResponseEntity(_list.get(), HttpStatus.OK);
-            } else {
-                return new ResponseEntity(HttpStatus.NO_CONTENT);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @GetMapping(value = "/byCourse", produces = "application/json")
+//    public ResponseEntity getByCourse(@RequestParam long id) {
+//        try {
+//            Optional<List<Question>> _list = questionRepository.findAllByCourseId(id);
+//            if (_list.isPresent()) {
+//                return new ResponseEntity(_list.get(), HttpStatus.OK);
+//            } else {
+//                return new ResponseEntity(HttpStatus.NO_CONTENT);
+//            }
+//        } catch (Exception e) {
+//            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

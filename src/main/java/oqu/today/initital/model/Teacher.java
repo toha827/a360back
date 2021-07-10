@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     private String name;
     private String position;
     @Size(max = 4000)
@@ -18,12 +18,11 @@ public class Teacher {
     private String photo;
     @Size(max = 4000)
     private String status;
-    private int courseId;
 
     public Teacher() {
     }
 
-    public Teacher(int id, String name, String position, String info, int age, String email, String photo, String status, int course_id) {
+    public Teacher(long id, String name, String position, String info, int age, String email, String photo, String status) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -32,10 +31,9 @@ public class Teacher {
         this.email = email;
         this.photo = photo;
         this.status = status;
-        this.courseId = course_id;
     }
 
-    public Teacher(String name, String position, String info, int age, String email, String photo, String status, int course_id) {
+    public Teacher(String name, String position, String info, int age, String email, String photo, String status) {
         this.name = name;
         this.position = position;
         this.info = info;
@@ -43,14 +41,13 @@ public class Teacher {
         this.email = email;
         this.photo = photo;
         this.status = status;
-        this.courseId = course_id;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -110,13 +107,6 @@ public class Teacher {
         this.status = status;
     }
 
-    public int getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(int courseId) {
-        this.courseId = courseId;
-    }
 
     @Override
     public String toString() {
@@ -129,7 +119,6 @@ public class Teacher {
                 ", email='" + email + '\'' +
                 ", photo='" + photo + '\'' +
                 ", status='" + status + '\'' +
-                ", course_id=" + courseId +
                 '}';
     }
 }
