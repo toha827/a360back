@@ -1,6 +1,9 @@
-package oqu.today.initital.model;
+package oqu.today.initital.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import oqu.today.initital.model.Option;
+import oqu.today.initital.model.Question;
+import oqu.today.initital.model.Quiz;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,39 +11,30 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "question")
-public class Question implements Serializable {
+public class QuestionDTO implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", unique = true, nullable = true)
-    private long id;
-
-    @Column(name = "content", nullable = false, length = 65535)
+    private int id;
     private String content;
-
-    @Column(name = "course_type", nullable = false, length = 65535)
     private String courseType;
 
-    @OneToMany
-    @JoinColumn(name = "question_id")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
     private Set<Option> options = new HashSet<Option>(0);
 
     @ManyToOne
     @JoinColumn(name = "quiz_id")
-    @JsonIgnore
     private Quiz quiz;
 
-    public Question() {
+    public QuestionDTO() {
     }
 
-    public Question(String content, String courseType, Set<Option> options, Quiz quiz) {
+    public QuestionDTO(String content, String courseType, Set<Option> options, Quiz quiz) {
         this.content = content;
         this.courseType = courseType;
         this.options = options;
         this.quiz = quiz;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -78,5 +72,14 @@ public class Question implements Serializable {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+    }
+
+    public Question toEntity () {
+        return new Question(
+                content,
+                courseType,
+                options,
+                quiz
+        );
     }
 }

@@ -9,6 +9,8 @@ import oqu.today.initital.repository.ChapterRepository;
 import oqu.today.initital.repository.CourseRepository;
 import oqu.today.initital.repository.QuestionRepository;
 import oqu.today.initital.repository.QuizRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,23 +33,36 @@ public class QuizRestController {
     private ChapterRepository chapterRepository;
 
 
+    private static final Logger logger = LoggerFactory.getLogger(FileRestContoller.class);
+
     @PostMapping(value = "")
     public ResponseEntity create(@RequestBody Quiz quiz) {
         try {
+            logger.info(quiz.toString());
             Optional<Course> _course = courseRepository.findById(quiz.getCourse().getId());
             Optional<Chapter> _chapter = chapterRepository.findById(quiz.getChapter().getId());
+
             if (_course.isPresent()) {
                 if(_chapter.isPresent()) {
                     quizRepository.save(quiz);
+                    return new ResponseEntity(HttpStatus.OK);
                 } else {
                     return new ResponseEntity(new UserUpdateResponse("Chapter not found"), HttpStatus.NOT_FOUND);
                 }
             } else {
                 return new ResponseEntity(new UserUpdateResponse("Course not found"), HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/all")
+    public ResponseEntity getAll() {
+        try {
+            return new ResponseEntity(quizRepository.findAll(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

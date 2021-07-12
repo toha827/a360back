@@ -58,4 +58,14 @@ public class Chapter {
     public void setMedia(String media) {
         this.media = media;
     }
+
+    @Override
+    public String toString() {
+        return "Chapter{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", media='" + media + '\'' +
+                '}';
+    }
 }

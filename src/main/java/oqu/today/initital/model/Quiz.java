@@ -10,7 +10,7 @@ import java.util.List;
 public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
 
     private String name;
 
@@ -20,11 +20,20 @@ public class Quiz {
     private Chapter chapter;
 
     @ManyToOne
-    @JsonIgnore
     private Course course;
 
     @OneToMany
+    @JoinColumn(name = "quiz_id")
     private List<Question> questions;
+
+    public Quiz(long id, String name, String description, Chapter chapter, Course course, List<Question> questions) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.chapter = chapter;
+        this.course = course;
+        this.questions = questions;
+    }
 
     public Quiz(String name, String description, Chapter chapter, Course course, List<Question> questions) {
         this.name = name;
@@ -37,7 +46,7 @@ public class Quiz {
     public Quiz() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
