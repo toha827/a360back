@@ -1,6 +1,9 @@
 package oqu.today.initital.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "chapters")
@@ -17,6 +20,11 @@ public class Chapter {
 
     @Column(name = "media")
     private String media;
+
+    @OneToMany
+    @JsonIgnore
+    @JoinColumn(name = "lesson_id")
+    private List<Lesson> lesson;
 
     public Chapter(String name, String description, String media) {
         this.name = name;

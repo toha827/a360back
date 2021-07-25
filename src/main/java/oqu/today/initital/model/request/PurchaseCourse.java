@@ -3,7 +3,6 @@ package oqu.today.initital.model.request;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
 public class PurchaseCourse {
     @Id
     private int id;

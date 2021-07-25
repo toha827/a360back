@@ -1,36 +1,35 @@
-package oqu.today.initital.model;
+package oqu.today.initital.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import oqu.today.initital.model.request.LessonDTO;
+import oqu.today.initital.model.*;
 
 import javax.persistence.*;
-@Entity
-@Table(name = "Lessons")
-public class Lesson {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+public class LessonDTO implements Serializable {
     private long id;
     private String title;
-    @Column(name = "link")
     private String video;
     private int number;
     private String block;
     private String lang;
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "course_id")
     private Course course;
     @ManyToOne
     private Teacher teacher;
     private String duration;
     @ManyToOne
-    @JoinColumn(name = "chapter_id")
+    @JoinColumn(name = "lesson_id")
     private Chapter chapter;
+    private int progress;
 
-    public Lesson() {
+    public LessonDTO() {
     }
 
-    public Lesson(String title, String video, int number, String block, String lang, Course course, Teacher teacher, String duration, Chapter chapter) {
+    public LessonDTO(String title, String video, int number, String block, String lang, Course course, Teacher teacher, String duration, Chapter chapter, int progress) {
         this.title = title;
         this.video = video;
         this.number = number;
@@ -40,8 +39,22 @@ public class Lesson {
         this.teacher = teacher;
         this.duration = duration;
         this.chapter = chapter;
+        this.progress = progress;
     }
 
+    public LessonDTO(long id, String title, String video, int number, String block, String lang, Course course, Teacher teacher, String duration, Chapter chapter, int progress) {
+        this.id = id;
+        this.title = title;
+        this.video = video;
+        this.number = number;
+        this.block = block;
+        this.lang = lang;
+        this.course = course;
+        this.teacher = teacher;
+        this.duration = duration;
+        this.chapter = chapter;
+        this.progress = progress;
+    }
 
     public long getId() {
         return id;
@@ -99,6 +112,14 @@ public class Lesson {
         this.lang = lang;
     }
 
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
     public Course getCourse() {
         return course;
     }
@@ -123,22 +144,17 @@ public class Lesson {
         this.chapter = chapter;
     }
 
-    public LessonDTO toDto() {
-
-        Course _course = new Course();
-        _course.setId(course.getId());
-        return new LessonDTO(
-                id,
-                title,
-                video,
-                number,
-                block,
-                lang,
-                _course,
-                teacher,
-                duration,
-                chapter,0
-        );
+    public Lesson toEntity() {
+        return new Lesson(
+                this.getTitle(),
+                this.getVideo(),
+                this.getNumber(),
+                this.getBlock(),
+                this.getLang(),
+                this.getCourse(),
+                this.getTeacher(),
+                this.getDuration(),
+                this.getChapter());
     }
 
     @Override
@@ -154,6 +170,7 @@ public class Lesson {
                 ", teacher=" + teacher +
                 ", duration='" + duration + '\'' +
                 ", chapter=" + chapter +
+                ", progress=" + progress +
                 '}';
     }
 }

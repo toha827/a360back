@@ -12,7 +12,7 @@ public class Option implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = true)
-    private int id;
+    private long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "question_id", nullable = false)
@@ -32,7 +32,7 @@ public class Option implements Serializable {
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

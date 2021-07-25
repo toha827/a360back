@@ -7,11 +7,8 @@ import oqu.today.initital.model.Question;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
 public class OptionDto implements Serializable {
-
-    @Id
-    private int id;
+    private long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
     private String content;
@@ -27,7 +24,7 @@ public class OptionDto implements Serializable {
     }
 
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

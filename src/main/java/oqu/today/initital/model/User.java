@@ -23,7 +23,7 @@ public class User {
     private int status;
     private String avatar;
     private Date bday;
-    @OneToMany
+    @ManyToMany
     @JsonIgnore
     private List<Course> purchaised;
 

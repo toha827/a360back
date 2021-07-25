@@ -8,6 +8,7 @@ import oqu.today.initital.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +30,8 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/javaApi/api/")
 public class FileRestContoller {
 
-    final String localhost = "https://45.80.70.68";
+    @Value("${hostname}")
+    private String localhost;
     final String payment = "https://payment.oqu.today/";
     private static final Logger logger = LoggerFactory.getLogger(FileRestContoller.class);
 
@@ -39,7 +41,7 @@ public class FileRestContoller {
     @Autowired
     private UserRepository userRepository;
 
-    @CrossOrigin(localhost)
+//    @CrossOrigin(localhost)
     @PostMapping("/uploadFile")
     public ResponseEntity uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("userId") long userId) {
         DBFile dbFile = dbFileStorageService.storeFile(file,userId);
@@ -61,7 +63,7 @@ public class FileRestContoller {
                 file.getContentType(), file.getSize()), HttpStatus.OK);
     }
 
-    @CrossOrigin(localhost)
+//    @CrossOrigin(localhost)
     @GetMapping("/downloadFile/{fileId}")
     public ResponseEntity<String> downloadFile(@PathVariable String fileId) {
         // Load file from database

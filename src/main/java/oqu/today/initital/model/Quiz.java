@@ -20,6 +20,8 @@ public class Quiz {
     private Chapter chapter;
 
     @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @OneToMany

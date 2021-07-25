@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
 public class QuestionDTO implements Serializable {
     @Id
     private int id;

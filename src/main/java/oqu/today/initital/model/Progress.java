@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Progress {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private int progress_id;
 
     @ManyToOne
     private Lesson lesson;
@@ -27,11 +27,11 @@ public class Progress {
     }
 
     public int getId() {
-        return id;
+        return progress_id;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.progress_id = id;
     }
 
     public Lesson getLesson() {

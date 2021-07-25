@@ -32,7 +32,6 @@ public class Question implements Serializable {
 
     public Question() {
     }
-
     public Question(String content, String courseType, Set<Option> options, Quiz quiz) {
         this.content = content;
         this.courseType = courseType;

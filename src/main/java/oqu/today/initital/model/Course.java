@@ -21,14 +21,14 @@ public class Course {
     private String toKnow;
     private int teacher_id;
     private double price;
-    private int progress;
     @OneToMany
     @JoinColumn(name = "course_id")
     private List<Lesson> lessons;
     @OneToMany
+    @JoinColumn(name = "course_id")
     private List<Quiz> quizes;
 
-    public Course(String name, String subject, String image, @Size(max = 4000) String info, int num_of_lessons, String toLearn, String toKnow, int teacher_id, double price, int progress, List<Lesson> lessons, List<Quiz> quizes) {
+    public Course(String name, String subject, String image, @Size(max = 4000) String info, int num_of_lessons, String toLearn, String toKnow, int teacher_id, double price, List<Lesson> lessons, List<Quiz> quizes) {
         this.name = name;
         this.subject = subject;
         this.image = image;
@@ -38,7 +38,6 @@ public class Course {
         this.toKnow = toKnow;
         this.teacher_id = teacher_id;
         this.price = price;
-        this.progress = progress;
         this.lessons = lessons;
         this.quizes = quizes;
     }
@@ -50,7 +49,7 @@ public class Course {
         return id;
     }
 
-    public void setId(int course_id) {
+    public void setId(long course_id) {
         this.id = course_id;
     }
 
@@ -126,14 +125,6 @@ public class Course {
         this.price = price;
     }
 
-    public int getProgress() {
-        return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
-    }
-
     public List<Lesson> getLessons() {
         return lessons;
     }
@@ -163,7 +154,6 @@ public class Course {
                 ", toKnow='" + toKnow + '\'' +
                 ", teacher_id=" + teacher_id +
                 ", price=" + price +
-                ", progress=" + progress +
                 ", lessons=" + lessons +
                 ", quizes=" + quizes +
                 '}';

@@ -1,14 +1,11 @@
 package oqu.today.initital.rest;
 
-import oqu.today.initital.model.Chapter;
-import oqu.today.initital.model.Course;
-import oqu.today.initital.model.Question;
-import oqu.today.initital.model.Quiz;
+import oqu.today.initital.model.*;
+import oqu.today.initital.model.request.OptionDto;
+import oqu.today.initital.model.request.QuizSubmitRequest;
+import oqu.today.initital.model.response.QuizResultResponse;
 import oqu.today.initital.model.response.UserUpdateResponse;
-import oqu.today.initital.repository.ChapterRepository;
-import oqu.today.initital.repository.CourseRepository;
-import oqu.today.initital.repository.QuestionRepository;
-import oqu.today.initital.repository.QuizRepository;
+import oqu.today.initital.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +24,16 @@ public class QuizRestController {
     private QuizRepository quizRepository;
 
     @Autowired
+    private QuestionOptionRepostory questionOptionRepostory;
+
+    @Autowired
     private CourseRepository courseRepository;
 
     @Autowired
     private ChapterRepository chapterRepository;
 
+    final String localhost = "http://45.80.70.68";
+//    final String localhost = "http://localhost:3000";
 
     private static final Logger logger = LoggerFactory.getLogger(FileRestContoller.class);
 
@@ -74,6 +76,33 @@ public class QuizRestController {
                 return new ResponseEntity(_list.get(), HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @CrossOrigin(localhost)
+    @PostMapping(value = "/submit")
+    public ResponseEntity submitQuiz(@RequestBody QuizSubmitRequest request) {
+        try {
+            Optional<Quiz> _quiz = quizRepository.findById(request.getQuiz().getId());
+
+            if(_quiz.isPresent()) {
+                int countCorrect = 0;
+                List<OptionDto> answers =  request.getAnswered_options();
+                for(int i=0; i< answers.size(); i++) {
+                    Optional<Option> _option = questionOptionRepostory.findById(answers.get(i).getId());
+
+                    if(_option.isPresent()) {
+                        if(_option.get().isCorrect()) {
+                            countCorrect++;
+                        }
+                    }
+                }
+                return new ResponseEntity(new QuizResultResponse("", countCorrect, request.getAnswered_options().size()), HttpStatus.OK);
+            } else {
+                return new ResponseEntity("QUIZ NOT FOUND", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         } catch (Exception e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

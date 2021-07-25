@@ -9,6 +9,7 @@ import oqu.today.initital.payload.EmailService;
 import oqu.today.initital.repository.UserRepository;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,14 +27,14 @@ public class UserRestController {
     @Autowired
     private EmailService emailService;
 
-    final String localhost = "https://45.80.70.68";
+    final String localhost = "http://45.80.70.68";
 //    final String localhost = "http://localhost:3000";
 
     @Autowired
     UserRepository userRepository;
 
     @CrossOrigin(localhost)
-    @PostMapping(value = "/checklogin" ,produces = "application/json")
+    @PostMapping(value = "/checklogin")
     public String checkLogin(@RequestBody User user) throws JSONException {
         try {
             User usr = userRepository.findByEmailPassword(user.getEmail(), user.getPassword());
